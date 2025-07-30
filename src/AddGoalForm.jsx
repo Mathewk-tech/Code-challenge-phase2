@@ -1,5 +1,5 @@
 import { useState } from "react";
-const url = "https://phase-2-week-2-code-challenge-mg6glpcf0.vercel.app";
+const url = "http://localhost:3000/";
 
 function Goal({ setgoals }) {
     const [form, setForm] = useState({
