@@ -5,26 +5,26 @@ import DepositForm from "./Deposit";
 import Overview from "./overview";
 import "./App.css";
 
-const url = "http://localhost:3000/";
+const url = "http://localhost:3000/goals";
 
 function App() {
   const [goals, setgoals] = useState([]);
 
   useEffect(() => {
-    fetch(`${url}/goals`)
+    fetch(`${url}`)
       .then(res => res.json())
       .then(data => setgoals(data));
   }, []);
 
   function handleDelete(id) {
-    fetch(`${url}/goals/${id}`, { method: "DELETE" })
-      .then(() => fetch(`${url}/goals`))
+    fetch(`${url}/${id}`, { method: "DELETE" })
+      .then(() => fetch(`${url}`))
       .then(res => res.json())
       .then(data => setgoals(data));
   }
 
   function handleAddGoal(newGoal) {
-    fetch(`${url}/goals`, {
+    fetch(`${url}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newGoal)
@@ -34,7 +34,7 @@ function App() {
   }
 
   function handleUpdateGoal(updatedGoal) {
-    fetch(`${url}/goals/${updatedGoal.id}`, {
+    fetch(`${url}/${updatedGoal.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedGoal)
