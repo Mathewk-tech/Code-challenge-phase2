@@ -1,5 +1,5 @@
 import { useState } from "react";
-const url = "https://code-challenge-phase2-dusky.vercel.app/";
+const url = "https://code-challenge-phase2-dusky.vercel.app/goals";
 
 function Goal({ setgoals }) {
     const [form, setForm] = useState({
@@ -22,14 +22,14 @@ function Goal({ setgoals }) {
             createdAt: new Date().toISOString().split('T')[0]
         };
 
-        fetch(`${url}/goals`, {
+        fetch(`${url}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newGoal)
         })
         .then(res => res.json())
         .then(() => {
-            fetch(`${url}/goals`)
+            fetch(`${url}`)
                 .then(res => res.json())
                 .then(data => setgoals(data));
         });
