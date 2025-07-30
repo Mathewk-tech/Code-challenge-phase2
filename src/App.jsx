@@ -5,26 +5,26 @@ import DepositForm from "./Deposit";
 import Overview from "./overview";
 import "./App.css";
 
-const url = "http://localhost:3000/goals";
+const url = "https://code-challenge-phase2-dusky.vercel.app/";
 
 function App() {
   const [goals, setgoals] = useState([]);
 
   useEffect(() => {
-    fetch(`${url}`)
+    fetch(`${url}/goals`)
       .then(res => res.json())
       .then(data => setgoals(data));
   }, []);
 
   function handleDelete(id) {
-    fetch(`${url}/${id}`, { method: "DELETE" })
+    fetch(`${url}/goals/${id}`, { method: "DELETE" })
       .then(() => fetch(`${url}`))
       .then(res => res.json())
       .then(data => setgoals(data));
   }
 
   function handleAddGoal(newGoal) {
-    fetch(`${url}`, {
+    fetch(`${url}/goals`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newGoal)
@@ -34,7 +34,7 @@ function App() {
   }
 
   function handleUpdateGoal(updatedGoal) {
-    fetch(`${url}/${updatedGoal.id}`, {
+    fetch(`${url}/goals/${updatedGoal.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedGoal)
