@@ -1,35 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from "react";
+import List from "./list";
+import Goal from "./AddGoalForm";
+import DepositForm from "./Deposit";
+import Overview from "./overview";
+import "./App.css";
+
+const url = "https://phase-2-week-2-code-challenge-mg6glpcf0.vercel.app";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [goals, setgoals] = useState([]);
+
+  useEffect(() => {
+    fetch(`${url}/goals`)
+      .then(res => res.json())
+      .then(data => setgoals(data));
+  }, []);
+
+  function handleDelete(id) {
+    fetch(`${url}/goals/${id}`, { method: "DELETE" })
+      .then(() => fetch(`${url}/goals`))
+      .then(res => res.json())
+      .then(data => setgoals(data));
+  }
+
+  function handleAddGoal(newGoal) {
+    fetch(`${url}/goals`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newGoal)
+    })
+      .then(res => res.json())
+      .then(goal => setgoals([...goals, goal]));
+  }
+
+  function handleUpdateGoal(updatedGoal) {
+    fetch(`${url}/goals/${updatedGoal.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedGoal)
+    })
+      .then(res => res.json())
+      .then(goal => setgoals(goals.map(g => g.id === goal.id ? goal : g)));
+  }
+
+  function handleDeposit(id, amount) {
+    const goal = goals.find(g => g.id === id);
+    const updatedGoal = { ...goal, savedAmount: Number(goal.savedAmount) + Number(amount) };
+    handleUpdateGoal(updatedGoal);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>Smart Goal Planner</h1>
+      <Overview goals={goals} />
+      <Goal onAddGoal={handleAddGoal} />
+      <DepositForm goals={goals} onDeposit={handleDeposit} />
+      <List goals={goals} setgoals={setgoals} onDelete={handleDelete} onUpdate={handleUpdateGoal} />
+    </div>
+  );
 }
 
 export default App
